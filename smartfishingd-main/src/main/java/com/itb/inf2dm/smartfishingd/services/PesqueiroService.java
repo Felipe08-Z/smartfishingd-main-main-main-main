@@ -16,9 +16,12 @@ private UsuarioPesqueiroRepository usuarioPesqueiroRepository;
 
     @Autowired
     private PesqueiroRepository pesqueiroRepository;
-    public List<Pesqueiro> findAll() {return pesqueiroRepository.findAll();}
+    public List<Pesqueiro> findAll() {return pesqueiroRepository.findByAprovadoTrue();}
+
+    public List<Pesqueiro> findPendentes() {return pesqueiroRepository.findByAprovadoIsNull();}
 
    public Pesqueiro save(Pesqueiro pesqueiro) {
+    pesqueiro.setAprovado(null);
     Pesqueiro novoPesqueiro = pesqueiroRepository.save(pesqueiro);
 
     UsuarioPesqueiro vinculo = new UsuarioPesqueiro();
@@ -39,10 +42,19 @@ private UsuarioPesqueiroRepository usuarioPesqueiroRepository;
     pesqueiroExistente.setTelefone(pesqueiro.getTelefone());
     pesqueiroExistente.setId(id);
     pesqueiroExistente.setDataCadastro(pesqueiro.getDataCadastro());
-    pesqueiroExistente.setStatusPesqueiro(pesqueiro.getStatusPesqueiro());
     pesqueiroExistente.setFoto(pesqueiro.getFoto());
     pesqueiroExistente.setInformacao(pesqueiro.getInformacao());
     pesqueiroExistente.setMapa(pesqueiro.getMapa());
+        return pesqueiroRepository.save(pesqueiroExistente);
+    }
+    public Pesqueiro aprovar(Long id) {
+        Pesqueiro pesqueiroExistente = findById(id);
+        pesqueiroExistente.setAprovado(true);
+        return pesqueiroRepository.save(pesqueiroExistente);
+    }
+    public Pesqueiro negar(Long id) {
+        Pesqueiro pesqueiroExistente = findById(id);
+        pesqueiroExistente.setAprovado(false);
         return pesqueiroRepository.save(pesqueiroExistente);
     }
     public Pesqueiro findById(Long id) {

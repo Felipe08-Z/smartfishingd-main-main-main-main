@@ -38,6 +38,8 @@ public class Pesqueiro {
     private String dataCadastro;
     @Column(name = "statusPesqueiro")
     private Boolean statusPesqueiro;
+    @Column(name = "aprovado")
+    private Boolean aprovado;
 
     public Long getId() {
         return id;
@@ -114,6 +116,14 @@ public class Pesqueiro {
 
     public void setStatusPesqueiro(Boolean statusPesqueiro) {
         this.statusPesqueiro = statusPesqueiro;
+    }
+
+    public Boolean getAprovado() {
+        return aprovado;
+    }
+
+    public void setAprovado(Boolean aprovado) {
+        this.aprovado = aprovado;
     }
 
     public String getTelefone() {

@@ -22,6 +22,7 @@ private BCryptPasswordEncoder passwordEncoder;
 
     public Usuario save(Usuario usuario) {
     usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
+    usuario.setNivelAcesso("USUARIO");
     return usuarioRepository.save(usuario);
 }
 
