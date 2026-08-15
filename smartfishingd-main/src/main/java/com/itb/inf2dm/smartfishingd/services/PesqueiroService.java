@@ -63,6 +63,7 @@ private UsuarioPesqueiroRepository usuarioPesqueiroRepository;
     }
     public void delete(Long id) {
         Pesqueiro pesqueiroExistente = findById(id);
+        usuarioPesqueiroRepository.deleteByPesqueiroId(id);
         pesqueiroRepository.delete(pesqueiroExistente);
     }
 
