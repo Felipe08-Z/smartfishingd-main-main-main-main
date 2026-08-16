@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import com.itb.inf2dm.smartfishingd.model.entity.Favorito;
@@ -20,9 +21,10 @@ public class ControllerFavorito {
     private FavoritoService favoritoService;
 
     @PostMapping
-    public ResponseEntity<Object> favoritar(@RequestBody Favorito favorito) {
+    public ResponseEntity<Object> favoritar(@RequestBody Favorito favorito, Authentication authentication) {
         try {
-            Favorito novoFavorito = favoritoService.favoritar(favorito.getUsuarioId(), favorito.getPesqueiroId());
+            Long usuarioId = (Long) authentication.getPrincipal();
+            Favorito novoFavorito = favoritoService.favoritar(usuarioId, favorito.getPesqueiroId());
             return ResponseEntity.status(HttpStatus.CREATED).body(novoFavorito);
         } catch (IllegalStateException e) {
             return ResponseEntity.status(409).body(
@@ -35,10 +37,11 @@ public class ControllerFavorito {
         }
     }
 
-    @DeleteMapping("/usuario/{usuarioId}/pesqueiro/{pesqueiroId}")
-    public ResponseEntity<Object> desfavoritar(@PathVariable String usuarioId, @PathVariable String pesqueiroId) {
+    @DeleteMapping("/pesqueiro/{pesqueiroId}")
+    public ResponseEntity<Object> desfavoritar(@PathVariable String pesqueiroId, Authentication authentication) {
         try {
-            favoritoService.desfavoritar(Long.parseLong(usuarioId), Long.parseLong(pesqueiroId));
+            Long usuarioId = (Long) authentication.getPrincipal();
+            favoritoService.desfavoritar(usuarioId, Long.parseLong(pesqueiroId));
             return ResponseEntity.ok().body(
                     Map.of(
                             "status", 200,
@@ -50,7 +53,7 @@ public class ControllerFavorito {
                     Map.of(
                             "status", 400,
                             "error", "Bad Request",
-                            "message", "O usuarioId ou pesqueiroId informado não é válido"
+                            "message", "O pesqueiroId informado não é válido"
                     )
             );
         } catch (RuntimeException e) {
@@ -64,19 +67,10 @@ public class ControllerFavorito {
         }
     }
 
-    @GetMapping("/usuario/{usuarioId}")
-    public ResponseEntity<Object> listarFavoritosPorUsuario(@PathVariable String usuarioId) {
-        try {
-            List<Pesqueiro> favoritos = favoritoService.listarFavoritosPorUsuario(Long.parseLong(usuarioId));
-            return ResponseEntity.ok(favoritos);
-        } catch (NumberFormatException e) {
-            return ResponseEntity.badRequest().body(
-                    Map.of(
-                            "status", 400,
-                            "error", "Bad Request",
-                            "message", "O usuarioId informado não é válido: " + usuarioId
-                    )
-            );
-        }
+    @GetMapping
+    public ResponseEntity<Object> listarFavoritosPorUsuario(Authentication authentication) {
+        Long usuarioId = (Long) authentication.getPrincipal();
+        List<Pesqueiro> favoritos = favoritoService.listarFavoritosPorUsuario(usuarioId);
+        return ResponseEntity.ok(favoritos);
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.itb.inf2dm.smartfishingd.model.entity.Usuario;
+import com.itb.inf2dm.smartfishingd.repository.ComentarioRepository;
 import com.itb.inf2dm.smartfishingd.repository.UsuarioPesqueiroRepository;
 import com.itb.inf2dm.smartfishingd.repository.UsuarioRepository;
 @Service
@@ -19,6 +20,9 @@ private BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
     private UsuarioPesqueiroRepository usuarioPesqueiroRepository;
+
+    @Autowired
+    private ComentarioRepository comentarioRepository;
 
     public List<Usuario> findAll() {
         return usuarioRepository.findAll();
@@ -61,6 +65,7 @@ private BCryptPasswordEncoder passwordEncoder;
     public void delete(Long id) {
         Usuario usuarioExistente = findById(id);
         usuarioPesqueiroRepository.deleteByUsuarioId(id);
+        comentarioRepository.deleteByUsuarioId(id);
         usuarioRepository.delete(usuarioExistente);
     }
 }
