@@ -53,6 +53,7 @@ private UsuarioPesqueiroRepository usuarioPesqueiroRepository;
     pesqueiroExistente.setFoto(pesqueiro.getFoto());
     pesqueiroExistente.setInformacao(pesqueiro.getInformacao());
     pesqueiroExistente.setMapa(pesqueiro.getMapa());
+    pesqueiroExistente.setCnpj(pesqueiro.getCnpj());
         return pesqueiroRepository.save(pesqueiroExistente);
     }
     public Pesqueiro aprovar(Long id) {
